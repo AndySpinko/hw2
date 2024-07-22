@@ -68,6 +68,7 @@ public class Warehouse extends Thread {
         truck.getBlocks().addAll(blocksToLoad);
         log.info("{} loaded", truck.getName());
         synchronized (truck) {
+            truck.setReady(true);
             truck.notifyAll();
         }
     }
@@ -100,6 +101,7 @@ public class Warehouse extends Thread {
         returnBlocksToStorage(arrivedBlocks);
         truck.getBlocks().clear();
         synchronized (truck) {
+            truck.setReady(true);
             truck.notifyAll();
         }
         log.info("{} unloaded at {}, there are {} blocks", truck.getName(), this.getName(), storage.size());
@@ -113,6 +115,7 @@ public class Warehouse extends Thread {
         try {
             trucks.add(truck);
             synchronized (truck) {
+                while (!truck.isReady())
                 truck.wait();
             }
             log.info("{} leaving", truck.getName());

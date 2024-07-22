@@ -1,6 +1,7 @@
 package org.example;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class Truck extends Thread {
     public void run() {
         log.info("Truck started");
         while (!routeList.isEmpty()) {
+            ready = false;
             Warehouse warehouse = routeList.poll();
             travel(warehouse);
             warehouse.arrive(this);
@@ -53,4 +55,7 @@ public class Truck extends Thread {
         }
         log.info("Arrived to warehouse: {}", warehouse.getName());
     }
+
+    @Setter
+    private volatile boolean ready;
 }
